@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mood Explorer</title>
+<style>
+ /* Reset & basics */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom, #fff0f5, #fdfdfd);
+  color: #333;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+#sidebar {
+  width: 240px;
+  background: #ffafcc; /* pastel pink */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ff7fa3; /* softer border */
+}
+#sidebar h2 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ff4d6d; /* bright pink/red */
+  user-select: none;
+}
+.mood-btn {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.4rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  color: #7a3b4d; /* dark pink for text */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.25s, color 0.25s;
+  user-select: none;
+}
+.mood-btn:hover {
+  background: #ff7fa3;
+  color: #fff;
+}
+.mood-btn.active {
+  background: #ff4d6d;
+  color: #fff;
+  font-weight: 700;
+}
+.mood-emoji {
+  font-size: 1.4rem;
+}
+
+/* Main content */
+#main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff0f5; /* light pastel pink */
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  color: #333;
+}
+
+/* Header */
+#header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  user-select: none;
+}
+#emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+#moodTitle {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #ff4d6d;
+}
+
+/* Message */
+#moodMessage {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 1.8rem;
+  color: #666;
+}
+
+/* Tabs */
+#tabs {
+  display: flex;
+  gap: 1.2rem;
+  border-bottom: 2px solid #ffafcc;
+  margin-bottom: 1.5rem;
+  user-select: none;
+}
+.tab {
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  color: #a35a70; /* medium pink */
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: border-color 0.3s, color 0.3s;
+  border-radius: 4px 4px 0 0;
+}
+.tab:hover {
+  color: #ff7fa3;
+}
+.tab.active {
+  color: #ff4d6d;
+  border-color: #ff4d6d;
+  font-weight: 700;
+}
+
+/* Content area */
+#tabContent {
+  flex-grow: 1;
+  font-size: 1.1rem;
+  color: #555;
+}
+#tabContent h2 {
+  color: #ff7fa3;
+  margin-bottom: 0.8rem;
+}
+#tabContent ul {
+  list-style: inside disc;
+  padding-left: 0;
+  margin: 0;
+}
+#tabContent li {
+  margin-bottom: 0.4rem;
+}
+
+/* Special Note */
+#specialNote {
+  margin-top: 2rem;
+  font-style: italic;
+  color: #ff7fa3;
+}
+
+/* Scrollbar for main content */
+#main::-webkit-scrollbar {
+  width: 8px;
+}
+#main::-webkit-scrollbar-track {
+  background: #fff0f5;
+}
+#main::-webkit-scrollbar-thumb {
+  background: #ff4d6d;
+  border-radius: 4px;
+}
+
+@media (max-width: 700px) {
+  body {
+    flex-direction: column;
+  }
+  #sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #ffafcc;
+    padding: 0.5rem 1rem;
+  }
+  #sidebar h2 {
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+  .mood-btn {
+    flex-shrink: 0;
+    margin-right: 0.8rem;
+    margin-bottom: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+  }
+  #main {
+    padding: 1.5rem 1.5rem 2rem;
+    height: calc(100vh - 60px);
+  }
+
+  /* Responsive nav tabs */
+  #tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+  #tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+  .tab {
+    flex: 0 0 auto;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+
+#homeBtn {
+  background-color: #007bff;   /* Blue background */
+  color: white;                /* White text */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 15px;            /* Space above button */
+  transition: background-color 0.3s ease;
+}
+
+#homeBtn:hover {
+  background-color: #0056b3;   /* Darker blue on hover */
+}
+
+
+
+</style>
+</head>
+<body>
+
+
+<div id="sidebar" aria-label="Mood selection">
+  <h2>Choose Mood</h2>
+  <!-- Buttons will be inserted by JS -->
+  <button id="homeBtn" type="button">Home</button>
+</div>
+
+
+
+<div id="main">
+  <div id="header" role="banner" aria-live="polite">
+    <div id="emoji" aria-hidden="true"></div>
+    <h1 id="moodTitle"></h1>
+  </div>
+  <p id="moodMessage"></p>
+
+  <nav id="tabs" role="tablist" aria-label="Mood detail categories">
+    <button class="tab active" data-tab="movies" role="tab" aria-selected="true" tabindex="0" id="tab-movies">Movies</button>
+    <button class="tab" data-tab="songs" role="tab" aria-selected="false" tabindex="-1" id="tab-songs">Songs</button>
+    <button class="tab" data-tab="activities" role="tab" aria-selected="false" tabindex="-1" id="tab-activities">Activities</button>
+    <button class="tab" data-tab="food" role="tab" aria-selected="false" tabindex="-1" id="tab-food">Food</button>
+    <button class="tab" data-tab="drinks" role="tab" aria-selected="false" tabindex="-1" id="tab-drinks">Drinks</button>
+    <button class="tab" data-tab="tips" role="tab" aria-selected="false" tabindex="-1" id="tab-tips">Tips</button>
+  </nav>
+
+  <section id="tabContent" role="tabpanel" aria-live="polite" aria-labelledby="tab-movies">
+    <!-- Dynamic content -->
+  </section>
+
+  <p id="specialNote" aria-live="polite"></p>
+</div>
+
+<script>
+  const moodData = {
+    happy: {
+      emoji: "😄",
+      title: "Feeling Happy!",
+      message: `Happiness is a wonderful state. Keep spreading your joy and enjoy the little things.`,
+      tabs: {
+        movies: ['The Secret Life of Walter Mitty', 'Amélie', 'La La Land'],
+        songs: ['“Happy” – Pharrell Williams', '“Walking on Sunshine” – Katrina and The Waves', '“Good Vibrations” – The Beach Boys'],
+        activities: ['Dance around your room', 'Call a close friend', 'Write a gratitude list'],
+        food: ['Chocolate chip cookies', 'Fresh fruit salad', 'Ice cream sundae'],
+        drinks: ['Fresh lemonade', 'Sparkling water with mint', 'Iced tea with honey'],
+        tips: ['Share your smile with others', 'Keep a gratitude journal', 'Play a cheerful character like Lulu in League of Legends']
+      },
+      specialNote: 'Why not play Lulu in League of Legends and spread some magic? ✨'
+    },
+    sad: {
+      emoji: "😢",
+      title: "Feeling Sad...",
+      message: `It's okay to feel down sometimes. Try to be kind to yourself, maybe watch something uplifting, or talk to a friend. Remember, every storm passes eventually.`,
+      tabs: {
+        movies: ['Inside Out', 'The Pursuit of Happyness', 'Good Will Hunting'],
+        songs: ['“Fix You” – Coldplay', '“Someone Like You” – Adele', '“Let It Be” – The Beatles'],
+        activities: ['Write down your feelings', 'Take a slow walk outside', 'Call a close friend or family member'],
+        food: ['Warm tomato soup', 'Comfort mac and cheese', 'Dark chocolate squares'],
+        drinks: ['Chamomile tea', 'Warm milk with honey', 'Coconut water'],
+        tips: ['Practice deep breathing', 'Watch your favorite funny video', 'Remember: it’s okay to ask for help']
+      },
+      specialNote: 'Remember, it’s okay to ask for help, Im always here for you'
+    },
+    angry: {
+      emoji: "😠",
+      title: "Feeling Angry!",
+      message: `Anger is natural, but channel it wisely. Take deep breaths, try to cool down, and maybe use physical activity to release the tension.`,
+      tabs: {
+        movies: ['Anger Management', 'The Incredible Hulk', 'Mad Max: Fury Road'],
+        songs: ['“Break Stuff” – Limp Bizkit', '“Killing in the Name” – Rage Against The Machine', '“You Oughta Know” – Alanis Morissette'],
+        activities: ['Punch a pillow', 'Go for a run', 'Try meditation or yoga'],
+        food: ['Spicy buffalo wings', 'Energy bars', 'Crunchy celery sticks'],
+        drinks: ['Cold water', 'Green tea', 'Electrolyte drink'],
+        tips: ['Count to ten before reacting', 'Take a moment alone', 'Try journaling your thoughts']
+      },
+      specialNote: 'Try channeling that energy into something creative like art or music.'
+    },
+    tired: {
+      emoji: "😴",
+      title: "Feeling Tired...",
+      message: `Rest is essential. Take a break, nap if possible, and try to relax your mind with calming activities.`,
+      tabs: {
+        movies: ['Sleepy Hollow', 'Inception', 'Finding Nemo'],
+        songs: ['“Weightless” – Marconi Union', '“Breathe Me” – Sia', '“Night Owl” – Galimatias'],
+        activities: ['Take a short nap', 'Listen to calming music', 'Do gentle stretching'],
+        food: ['Banana smoothie', 'Oatmeal with honey', 'Almond butter toast'],
+        drinks: ['Herbal tea', 'Warm milk', 'Electrolyte-infused water'],
+        tips: ['Avoid caffeine late in the day', 'Limit screen time before bed', 'Maintain a regular sleep schedule']
+      },
+      specialNote: 'Consider a gentle yoga flow before bed for better rest.'
+    },
+    anxious: {
+      emoji: "😰",
+      title: "Feeling Anxious...",
+      message: `Anxiety can feel overwhelming. Ground yourself by focusing on the present moment and breathing deeply.`,
+      tabs: {
+        movies: ['Silver Linings Playbook', 'Inside Out', 'The King’s Speech'],
+        songs: ['“Let It Go” – James Bay', '“Shake It Out” – Florence + The Machine', '“Holocene” – Bon Iver'],
+        activities: ['Practice mindfulness meditation', 'Write a to-do list', 'Do light exercise'],
+        food: ['Dark chocolate', 'Blueberry smoothie', 'Mixed nuts'],
+        drinks: ['Peppermint tea', 'Lemon balm tea', 'Warm water with lemon'],
+        tips: ['Try the 4-7-8 breathing technique', 'Limit caffeine intake', 'Talk to someone you trust']
+      },
+      specialNote: 'Try grounding exercises like feeling your feet on the floor.'
+    },
+    inLove: {
+      emoji: "😍",
+      title: "Feeling In Love!",
+      message: `Love is a powerful feeling! Cherish it, express your affection, and enjoy the fluttering excitement.`,
+      tabs: {
+        movies: ['The Notebook', 'Pride & Prejudice', 'La La Land'],
+        songs: ['“All of Me” – John Legend', '“Can’t Help Falling in Love” – Elvis Presley', '“Love on Top” – Beyoncé'],
+        activities: ['Write a love letter', 'Plan a romantic date', 'Dance with your partner'],
+        food: ['Chocolate-covered strawberries', 'Sushi platter', 'Champagne and caviar'],
+        drinks: ['Rosé wine', 'Cocktail with fresh berries', 'Sparkling water with lime'],
+        tips: ['Express your feelings honestly', 'Spend quality time together', 'Celebrate the little moments']
+      },
+      specialNote: 'The whole universe is waiting for your smile'
+    },
+    insecure: {
+      emoji: "😟",
+      title: "Feeling Insecure...",
+      message: `We all have moments of doubt. Focus on your strengths and remember how unique and valuable you are.`,
+      tabs: {
+        movies: ['Eat Pray Love', 'Legally Blonde', 'The Devil Wears Prada'],
+        songs: ['“Fight Song” – Rachel Platten', '“Stronger” – Kelly Clarkson', '“Confident” – Demi Lovato'],
+        activities: ['Make a list of your achievements', 'Try positive affirmations', 'Do something creative'],
+        food: ['Smoothie bowl', 'Avocado toast', 'Dark chocolate'],
+        drinks: ['Matcha tea', 'Water with cucumber', 'Green juice'],
+        tips: ['Practice self-compassion', 'Avoid negative self-talk', 'Surround yourself with supportive people']
+      },
+      specialNote: 'Remember: You’re enough just as you are.'
+    },
+    motivated: {
+      emoji: "💪",
+      title: "Feeling Motivated!",
+      message: `Great energy! Channel it to achieve your goals and push your limits.`,
+      tabs: {
+        movies: ['Rocky', 'The Pursuit of Happyness', 'Whiplash'],
+        songs: ['“Eye of the Tiger” – Survivor', '“Stronger” – Kanye West', '“Can’t Hold Us” – Macklemore & Ryan Lewis'],
+        activities: ['Set clear goals', 'Start a workout', 'Organize your workspace'],
+        food: ['Protein smoothie', 'Grilled chicken salad', 'Trail mix'],
+        drinks: ['Coffee', 'Green tea', 'Electrolyte water'],
+        tips: ['Break big tasks into smaller steps', 'Reward yourself', 'Visualize success']
+      },
+      specialNote: 'Keep that momentum going! Every step counts.'
+    },
+    numb: {
+      emoji: "😐",
+      title: "Feeling Numb...",
+      message: `Feeling numb can be confusing. Try small sensory experiences to reconnect with yourself.`,
+      tabs: {
+        movies: ['Eternal Sunshine of the Spotless Mind', 'Her', 'Lost in Translation'],
+        songs: ['“Breathe Me” – Sia', '“The Night We Met” – Lord Huron', '“Skinny Love” – Bon Iver'],
+        activities: ['Take a walk outside', 'Listen to nature sounds', 'Try journaling'],
+        food: ['Warm soup', 'Smoothie', 'Fresh fruit'],
+        drinks: ['Warm herbal tea', 'Water with lemon', 'Fruit-infused water'],
+        tips: ['Focus on your senses', 'Give yourself permission to feel', 'Reach out if you need support']
+      },
+      specialNote: 'Sometimes, just being present is enough.'
+    }
+  };
+
+  // Elements
+  const sidebar = document.getElementById('sidebar');
+  const emojiEl = document.getElementById('emoji');
+  const moodTitleEl = document.getElementById('moodTitle');
+  const moodMessageEl = document.getElementById('moodMessage');
+  const tabsEl = document.getElementById('tabs');
+  const tabContentEl = document.getElementById('tabContent');
+  const specialNoteEl = document.getElementById('specialNote');
+
+  // Populate sidebar buttons
+  const moods = Object.keys(moodData);
+  moods.forEach((mood, index) => {
+    const btn = document.createElement('button');
+    btn.className = 'mood-btn';
+    btn.type = 'button';
+    btn.dataset.mood = mood;
+    btn.setAttribute('aria-controls', 'main');
+    btn.setAttribute('aria-selected', 'false');
+    btn.innerHTML = `<span class="mood-emoji" aria-hidden="true">${moodData[mood].emoji}</span> ${moodData[mood].title.replace(/Feeling /, '')}`;
+    if (index === 0) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+    }
+    sidebar.appendChild(btn);
+  });
+
+  let currentMood = moods[0];
+  let currentTab = 'movies';
+
+  function renderMood(mood) {
+    currentMood = mood;
+    // Update active button
+    sidebar.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mood === mood);
+      btn.setAttribute('aria-selected', btn.dataset.mood === mood ? 'true' : 'false');
+      btn.tabIndex = btn.dataset.mood === mood ? 0 : -1;
+    });
+
+    const data = moodData[mood];
+    emojiEl.textContent = data.emoji;
+    moodTitleEl.textContent = data.title;
+    moodMessageEl.textContent = data.message;
+    specialNoteEl.textContent = data.specialNote || '';
+
+    // Reset tabs selection to first tab on mood change
+    currentTab = 'movies';
+    setActiveTab(currentTab);
+  }
+
+  function setActiveTab(tab) {
+    currentTab = tab;
+
+    // Update tab buttons
+    tabsEl.querySelectorAll('.tab').forEach(button => {
+      const isActive = button.dataset.tab === tab;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      button.tabIndex = isActive ? 0 : -1;
+    });
+
+    // Update tabContent
+    const moodTabs = moodData[currentMood].tabs;
+    const items = moodTabs[tab] || [];
+    tabContentEl.innerHTML = '';
+
+    if (items.length === 0) {
+      tabContentEl.textContent = 'No suggestions available.';
+      return;
+    }
+
+    // For "tips", we can show as paragraphs, else as list
+    if (tab === 'tips') {
+      items.forEach(tip => {
+        const p = document.createElement('p');
+        p.textContent = '• ' + tip;
+        tabContentEl.appendChild(p);
+      });
+    } else {
+      const ul = document.createElement('ul');
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      tabContentEl.appendChild(ul);
+    }
+
+    // Update aria-labelledby for tabContent to active tab id
+    tabContentEl.setAttribute('aria-labelledby', 'tab-' + tab);
+  }
+
+  // Event listeners
+  sidebar.addEventListener('click', (e) => {
+    if (e.target.closest('.mood-btn')) {
+      const selectedMood = e.target.closest('.mood-btn').dataset.mood;
+      if (selectedMood !== currentMood) {
+        renderMood(selectedMood);
+      }
+    }
+  });
+
+  tabsEl.addEventListener('click', (e) => {
+    if (e.target.classList.contains('tab')) {
+      const selectedTab = e.target.dataset.tab;
+      if (selectedTab !== currentTab) {
+        setActiveTab(selectedTab);
+      }
+    }
+  });
+
+  // Keyboard navigation for tabs
+  tabsEl.addEventListener('keydown', (e) => {
+    const tabs = Array.from(tabsEl.querySelectorAll('.tab'));
+    const currentIndex = tabs.findIndex(tab => tab.dataset.tab === currentTab);
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % tabs.length;
+      tabs[nextIndex].focus();
+      setActiveTab(tabs[nextIndex].dataset.tab);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+      tabs[prevIndex].focus();
+      setActiveTab(tabs[prevIndex].dataset.tab);
+    }
+  });
+
+  // Initialize
+  renderMood(currentMood);
+
+  document.getElementById('homeBtn').addEventListener('click', () => {
+    location.href = 'index.html'; // Adjust if your homepage file name is different
+  });
+</script>
+
+</body>
+</html>

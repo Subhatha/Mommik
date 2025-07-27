@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Surprise for You!</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ffafcc, #ff4d6d);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      user-select: none;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+    }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      max-width: 450px;
+      text-align: center;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    #surprises {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 700px;
+    }
+    .surprise-box {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+      transition: background 0.3s, transform 0.3s;
+      user-select: none;
+    }
+    .surprise-box:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+    .surprise-box.revealed {
+      background: white;
+      color: #ff4d6d;
+      cursor: default;
+      box-shadow: 0 0 15px #ff4d6d;
+      transform: none;
+    }
+    .surprise-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    #backBtn {
+      margin-top: 3rem;
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 0.7rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+      user-select: none;
+    }
+    #backBtn:hover {
+      background: white;
+      color: #ff4d6d;
+    }
+
+    #fullscreenVideoOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+}
+
+#fullscreenVideoOverlay video {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 12px;
+  background: black;
+}
+
+#fullscreenVideoOverlay button.closeBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: #ff4d6d;
+  color: white;
+  user-select: none;
+  transition: background 0.3s ease;
+}
+
+#fullscreenVideoOverlay button.closeBtn:hover {
+  background: #ff1a3c;
+}
+
+  </style>
+</head>
+<body>
+  <h1>🎉 Your Surprises 🎉</h1>
+  <p>Click on the boxes below to reveal your little surprises! Enjoy :)</p>
+  <div id="surprises">
+    <div class="surprise-box" data-type="text" data-content="Hey love, remember: You are amazing just as you are! 💖">
+      <div class="surprise-emoji">💌</div>
+      <div>Click me!</div>
+    </div>
+    <div class="surprise-box" data-type="image" data-content="https://media.giphy.com/media/3o6ZtpxSZbQRRnwCKQ/giphy.gif">
+      <div class="surprise-emoji">🌸</div>
+      <div>Click me!</div>
+    </div>
+    <div class="surprise-box" data-type="text" data-content="Here’s a virtual chocolate 🍫 — Sweetness for you!">
+      <div class="surprise-emoji">🍫</div>
+      <div>Click me!</div>
+    </div>
+    <div class="surprise-box" data-type="quote" data-content="“You are the finest, loveliest, tenderest, and most beautiful person I have ever known—and even that is an understatement.” — F. Scott Fitzgerald">
+      <div class="surprise-emoji">📖</div>
+      <div>Click me!</div>
+    </div>
+    <div class="surprise-box" data-type="video" data-content="https://ia803204.us.archive.org/34/items/img-4312_202507/IMG_4312.mp4">
+  <div class="surprise-emoji">🎬</div>
+  <div>Click me!</div>
+</div>
+    </div>
+  </div>
+
+  <button id="backBtn" onclick="location.href='index.html'">Back to Home</button>
+
+  <script>
+    const boxes = document.querySelectorAll('.surprise-box');
+
+    boxes.forEach(box => {
+      box.addEventListener('click', () => {
+        if (box.classList.contains('revealed')) return; // prevent re-click
+
+        const type = box.getAttribute('data-type');
+        const content = box.getAttribute('data-content');
+
+        if(type === 'text' || type === 'quote'){
+          box.innerHTML = `<div class="surprise-emoji">✨</div><div>${content}</div>`;
+          box.classList.add('revealed');
+        } else if(type === 'image'){
+          box.innerHTML = `<img src="${content}" alt="Surprise image" style="max-width:100%; border-radius:12px;">`;
+          box.classList.add('revealed');
+        } else if(type === 'video'){
+  box.innerHTML = `
+    <video controls autoplay muted style="max-width:100%; border-radius:12px;">
+      <source src="${content}" type="video/quicktime">
+      Your browser does not support the video tag.
+    </video>`;
+  box.classList.add('revealed');
+}
+      });
+    });
+    
+  </script>
+  <div id="fullscreenVideoOverlay">
+  <video id="fullscreenVideo" controls autoplay muted></video>
+  <button class="closeBtn">Close</button>
+</div>
+
+</body>
+</html>

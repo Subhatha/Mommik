@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What Are You Feeling?</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #fff0f5, #fdfdfd);
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #ff4d6d;
+      margin-bottom: 30px;
+    }
+
+    .welcome-message p {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    #chooseMoodBtn {
+      background-color: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 77, 109, 0.5);
+      transition: background-color 0.3s ease;
+      margin-bottom: 40px;
+    }
+
+    #chooseMoodBtn:hover {
+      background-color: #ff1a47;
+    }
+
+    .welcome-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3);
+    }
+
+    .extra-section {
+      margin-top: 60px;
+      padding-bottom: 60px;
+    }
+
+    .quote-box,
+    .surprise-box {
+      background: #fff;
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 600px;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .quote-box p {
+      font-style: italic;
+      color: #555;
+      font-size: 1.1rem;
+    }
+
+    .surprise-box button {
+      background-color: #ffafcc;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .surprise-box button:hover {
+      background-color: #ff7fa3;
+    }
+
+    @keyframes floatHearts {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -50px;
+      font-size: 24px;
+      color: #ff4d6d;
+      animation: floatHearts 8s linear infinite;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>What Are You Feeling Right Now?</h1>
+
+    <div class="welcome-message">
+      <p>Welcome to a special place where your feelings matter. Take a moment to breathe, reflect, and explore the little joys and challenges of today.</p>
+      <p>Click the button below if you want a little surprise or some comforting words.</p>
+    </div>
+
+    <button id="chooseMoodBtn">Choose Your Mood</button>
+
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Calming nature" class="welcome-image" />
+  </div>
+
+  <div class="extra-section">
+    <div class="quote-box">
+      <h2>💬 Quote of the Day</h2>
+      <p id="quote-text"></p>
+    </div>
+
+    <div class="surprise-box">
+      <h2>🎁 Feeling Spontaneous?</h2>
+      <button onclick="location.href='surprise.html'">Surprise Me!</button>
+    </div>
+  </div>
+
+  <!-- Floating hearts -->
+  <script>
+    document.getElementById('chooseMoodBtn').addEventListener('click', () => {
+      window.location.href = 'mood.html';
+    });
+
+    // Floating hearts effect
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 8000);
+    }, 1500);
+
+    // Surprise me button logic
+    function surpriseMe() {
+      const moods = ['happy', 'sad', 'angry', 'tired', 'anxious', 'inlove', 'insecure', 'motivated', 'numb'];
+      const randomMood = moods[Math.floor(Math.random() * moods.length)];
+      window.location.href = `mood.html?mood=${randomMood}`;
+    }
+
+    // Daily quote logic
+    const quotes = [
+      "“You are my today and all of my tomorrows.” – Leo Christopher",
+      "“Every love story is beautiful, but ours is my favorite.”",
+      "“Even on your worst days, you are still my reason to smile.”",
+      "“You’re my safe place, my favorite person, my everything.”",
+      "“Being with you feels like home.”",
+      "“You have a place in my heart no one else ever could.” – F. Scott Fitzgerald",
+      "“No matter how hard the day is, seeing you makes it better.”",
+      "“You're my person. Always have been. Always will be.”"
+    ];
+
+    const quoteText = document.getElementById("quote-text");
+    const todayIndex = new Date().getDate() % quotes.length;
+    quoteText.innerText = quotes[todayIndex];
+  </script>
+
+</body>
+</html>
